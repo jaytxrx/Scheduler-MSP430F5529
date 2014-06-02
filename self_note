@@ -1,0 +1,26 @@
+/* todo:
+ * 5) make stack overflow check ? i.e check if enough space is left for register storage
+ * 6) skip task if not enough stack left
+ * 7) when it in border, dont forget to write back "beef" to the border after task switching since it would have been overwritten when we pushed the registers. but after register push, it touches min stack, then also we have to write back
+ * 8) the last location should be also checked if stack overflowed to next task boundary
+ */
+
+/* self note:
+ * TO PREVENT BUFFER OVERFLOW:
+ * push the registers to stack if enough space is pending.
+ * the last location in stack is filled with 0xbeef
+ * this location should be exculded for storing registers
+ * 
+ * TO DETECT BUFFER OVERFLOW:
+ * do we need this ?
+ * before switching to the task, make sure its last location is filled with 0xbeef
+ * in a context switching, we only check if there are enopugh space to push the registers
+ * if no we just skip to next task
+ * but there is no mechanism to show there was on overflow. some task might just grow out of its area
+ * what mechnism is there to avoid corrupting other peoples RAM area while there is a stack overflow ? MPU ? we could manipulate next tasks function call and redirect it to our function.
+ */
+
+// compilation proceedure 
+// msp430-gcc -mmcu=msp430f5529 -Os scheduler.c -o scheduler.o -c
+// msp430-gcc -mmcu=msp430f5529 tasks.c -o tasks.o -c
+// msp430-gcc -mmcu=msp430f5529 -o a.out scheduler.o tasks.o
